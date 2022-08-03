@@ -1,6 +1,7 @@
 subprojects {
     apply plugin: 'maven'
     apply plugin: 'java'
+    apply plugin: 'maven-publish'
 
     group = 'moe.kyokobot'
     version = '2.0.1'
@@ -14,5 +15,27 @@ subprojects {
         maven { url "https://jcenter.bintray.com/" }
         maven { url "https://repo.maven.apache.org/maven2" }
         maven { url "https://jitpack.io/" }
+    }
+
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        classifier 'sources'
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourceJar
+                groupId project.group
+                artifactId project.name
+                version project.version
+
+                pom {
+                    name = project.name
+                    description = project.description
+                }
+            }
+        }
     }
 }
